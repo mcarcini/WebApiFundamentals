@@ -111,5 +111,28 @@ namespace TheCodeCamp.Controllers
             return BadRequest(ModelState);
         }
 
+        [Route("{moniker}")]
+        public async Task<IHttpActionResult> Delete(String moniker)
+        {
+            try
+            {
+                var camp = await _repository.GetCampAsync(moniker);
+                if (camp == null) return NotFound();
+
+                _repository.DeleteCamp(camp);
+
+                if (await _repository.SaveChangesAsync())
+                {
+                    return Ok();
+                }
+                else {
+                    return InternalServerError();
+                }
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }            
+        }
     }
 }
