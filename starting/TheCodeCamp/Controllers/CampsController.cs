@@ -89,5 +89,27 @@ namespace TheCodeCamp.Controllers
             }
             return BadRequest(ModelState);
         }
+
+        [Route("{moniker}")]
+        public async Task<IHttpActionResult> Put(String moniker,CampModel model)
+        {
+            try
+            {
+                var camp = await _repository.GetCampAsync(moniker);
+                if (camp == null) return NotFound();
+
+                _mapper.Map(model, camp);
+
+                if (await _repository.SaveChangesAsync()) {                
+                    return Ok(_mapper.Map<CampModel>(camp));
+                }                
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+            return BadRequest(ModelState);
+        }
+
     }
 }
