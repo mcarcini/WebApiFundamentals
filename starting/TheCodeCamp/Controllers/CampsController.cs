@@ -68,7 +68,12 @@ namespace TheCodeCamp.Controllers
         [Route()]
         public async Task<IHttpActionResult> Post(CampModel model) {
             try {
-                if (ModelState.IsValid) {
+                if (await _repository.GetCampAsync(model.Moniker) != null)
+                {
+                    ModelState.AddModelError("Moniker", "The moniker is already un use");
+                }
+
+                if (ModelState.IsValid) {                   
                     var camp = _mapper.Map<Camp>(model);
                     _repository.AddCamp(camp);
 
@@ -82,7 +87,7 @@ namespace TheCodeCamp.Controllers
             catch (Exception e) {
                 return InternalServerError(e);
             }
-            return BadRequest();
+            return BadRequest(ModelState);
         }
     }
 }
