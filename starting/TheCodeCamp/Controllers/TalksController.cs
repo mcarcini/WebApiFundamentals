@@ -61,7 +61,30 @@ namespace TheCodeCamp.Controllers
                     if (await _repository.SaveChangesAsync()) {
                         return CreatedAtRoute("GetTalk", new { moniker = moniker, id = talk.TalkId }, _mapper.Map<TalkModel>(talk));
                     }
+                }
+            }
+            catch (Exception e)
+            {
+                return InternalServerError(e);
+            }
+            return BadRequest();
+        }
 
+        [Route("id:int")]
+        public async Task<IHttpActionResult> Put(string moniker,int id, TalkModel talkModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {                
+                    var talk = await _repository.GetTalkByMonikerAsync(moniker, id);
+                    if (talk == null) return NotFound();
+
+                    _mapper.Map(talkModel, talk);
+
+                    if (await _repository.SaveChangesAsync()) {
+                        return Ok(_mapper.Map<TalkModel>(talk));
+                    }
                 }
             }
             catch (Exception e)
