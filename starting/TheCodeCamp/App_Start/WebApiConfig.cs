@@ -1,4 +1,5 @@
 ﻿using Microsoft.Web.Http;
+using Microsoft.Web.Http.Versioning;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace TheCodeCamp
                 cfg.DefaultApiVersion = new ApiVersion(1, 1);
                 cfg.AssumeDefaultVersionWhenUnspecified = true;
                 cfg.ReportApiVersions = true;
+                cfg.ApiVersionReader = new HeaderApiVersionReader("X-Version");
             });
 
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver =
